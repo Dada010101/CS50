@@ -1,0 +1,8 @@
+greeting = input("Please enter input: ").lower()
+
+if greeting[:5] == "hello" or greeting[0] == " ":
+    print("$0")
+elif greeting != "hello" and greeting[0] == "h":
+    print("$20")
+else:
+    print("$100")
