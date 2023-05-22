@@ -1,3 +1,5 @@
+#BANK
+
 greeting = input("Please enter input: ").lower()
 
 if greeting[:5] == "hello" or greeting[0] == " ":
@@ -6,3 +8,33 @@ elif greeting != "hello" and greeting[0] == "h":
     print("$20")
 else:
     print("$100")
+    
+#FIGLET
+
+import sys
+import pyfiglet
+
+def print_usage():
+    print("Usage: python figlet.py [-f/--font font_name]")
+    sys.exit(1)
+
+if len(sys.argv) == 1:
+    font = pyfiglet.FigletFont.random_font()
+elif len(sys.argv) == 3:
+    if sys.argv[1] not in ["-f", "--font"]:
+        print("Error: Invalid command-line argument. The first argument must be -f or --font.")
+        print_usage()
+    else:
+        font = sys.argv[2]
+        if font.lower() not in pyfiglet.FigletFont.getFonts():
+            print(f"Error: The specified font '{font}' is not supported.")
+            sys.exit(1)
+else:
+    print("Error: Invalid number of command-line arguments.")
+    print_usage()
+
+text = input("Enter text: ")
+
+figlet = pyfiglet.Figlet(font=font)
+output = figlet.renderText(text)
+print(output)
