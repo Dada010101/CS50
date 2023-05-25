@@ -1,0 +1,31 @@
+#CASH
+
+while True:
+    cash_input = input("Enter amount: ")
+    try:
+        cash = float(cash_input)
+        if cash > 0:
+            break
+        else:
+            print("Invalid input. Please enter a positive number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+coins = round(cash * 100)
+
+count = 0
+while coins > 0:
+    if coins >= 25:
+        coins -= 25
+        count += 1
+    elif coins >= 10:
+        coins -= 10
+        count += 1
+    elif coins >= 5:
+        coins -= 5
+        count += 1
+    else:
+        coins -= 1
+        count += 1
+
+print(count)
