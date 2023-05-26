@@ -1,0 +1,22 @@
+text = input("Write something: ")
+
+lettersCount = sum(1 for char in text if char.isalpha())
+wordCount = len(text.split())
+
+senCount = 0
+
+for i in range(len(text)):
+    if text[i] == '.' or text[i] == '?' or text[i] == '!':
+        senCount += 1
+
+avgLetter = round(lettersCount / wordCount * 100, 2)
+avgSentence = round(senCount / wordCount * 100)
+
+index =( 0.0588 * avgLetter - 0.296 * avgSentence) - 15.8
+
+if index < 1:
+    print("Before Grade 1")
+elif index > 16:
+    print("Grade 16+")
+else:
+    print(f"Grade {round(index)}")
