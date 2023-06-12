@@ -1,0 +1,96 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "wav.h"
+
+int check_format(WAVHEADER header);
+int get_block_size(WAVHEADER header);
+
+int main(int argc, char *argv[])
+{
+    // Ensure proper usage
+    if (argc != 3)
+    {
+        printf("Usage: reverse input.wav output.wav\n");
+        return 1;
+    }
+
+    // Open input file for reading
+    FILE *input_file = fopen(argv[1], "rb");
+    if (input_file == NULL)
+    {
+        printf("Unable to open input file.\n");
+        return 1;
+    }
+
+    // Read header
+    WAVHEADER header;
+    fread(&header, sizeof(WAVHEADER), 1, input_file);
+
+    // Use check_format to ensure WAV format
+    if (!check_format(header))
+    {
+        printf("Input file is not in WAV format.\n");
+        fclose(input_file);
+        return 1;
+    }
+
+    // Open output file for writing
+    FILE *output_file = fopen(argv[2], "wb");
+    if (output_file == NULL)
+    {
+        printf("Unable to open output file.\n");
+        fclose(input_file);
+        return 1;
+    }
+
+    // Write header to file
+    fwrite(&header, sizeof(WAVHEADER), 1, output_file);
+
+    // Use get_block_size to calculate size of block
+    int block_size = get_block_size(header);
+
+    // Write reversed audio to file
+    int16_t *buffer = malloc(block_size * sizeof(int16_t));
+    while (fread(buffer, sizeof(int16_t), block_size, input_file))
+    {
+        for (int i = block_size - 1; i >= 0; i--)
+        {
+            fwrite(&buffer[i], sizeof(int16_t), 1, output_file);
+        }
+    }
+
+    // Cleanup
+    free(buffer);
+    fclose(input_file);
+    fclose(output_file);
+
+    return 0;
+}
+
+int check_format(WAVHEADER header)
+{
+    // TODO #4
+    if (header.chunkID[0] != 'R' || header.chunkID[1] != 'I' || header.chunkID[2] != 'F' || header.chunkID[3] != 'F')
+    {
+        return 0;
+    }
+
+    if (header.format[0] != 'W' || header.format[1] != 'A' || header.format[2] != 'V' || header.format[3] != 'E')
+    {
+        return 0;
+    }
+
+    // Add additional checks for the WAV format if needed
+
+    return 1;
+}
+
+int get_block_size(WAVHEADER header)
+{
+    // TODO #7
+    int bytes_per_sample = header.bitsPerSample / 8;
+    int block_size = header.blockAlign / bytes_per_sample;
+    return block_size;
+}
